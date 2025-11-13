@@ -1,0 +1,701 @@
+openapi: 3.0.3
+info:
+  title: Pokemon Favorites API
+  version: 1.0.0
+  description: >
+    REST API for listing Pokémon (via PokeAPI), viewing details, and managing favorites.
+    Includes endpoints for searching favorites and filtering by ability.
+
+servers:
+  - url: https://api.example.com
+    description: Production server
+  - url: http://localhost:8000
+    description: Local development
+
+components:
+  schemas:
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+        messages:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+      example:
+        error: "Validation failed"
+        messages:
+          page: ["The page must be an integer."]
+          limit: ["The limit must not be greater than 100."]
+
+    PokemonSummary:
+      type: object
+      properties:
+        name:
+          type: string
+        url:
+          type: string
+          format: uri
+      example:
+        name: "bulbasaur"
+        url: "https://pokeapi.co/api/v2/pokemon/1/"
+
+    PokemonListResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/PokemonSummary'
+        pagination:
+          type: object
+          properties:
+            current_page:
+              type: integer
+            total:
+              type: integer
+            per_page:
+              type: integer
+            last_page:
+              type: integer
+      example:
+        data:
+          - name: "bulbasaur"
+            url: "https://pokeapi.co/api/v2/pokemon/1/"
+          - name: "charmander"
+            url: "https://pokeapi.co/api/v2/pokemon/4/"
+        pagination:
+          current_page: 1
+          total: 1118
+          per_page: 20
+          last_page: 56
+
+    PokemonDetail:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        height:
+          type: integer
+        weight:
+          type: integer
+        types:
+          type: array
+          items:
+            type: string
+        abilities:
+          type: array
+          items:
+            type: object
+            properties:
+              name: 
+                type: string
+              is_hidden: 
+                type: boolean
+        stats:
+          type: array
+          items:
+            type: object
+            properties:
+              name: 
+                type: string
+              value: 
+                type: integer
+        sprite:
+          type: string
+          format: uri
+        is_favorite:
+          type: boolean
+      example:
+        id: 1
+        name: "bulbasaur"
+        height: 7
+        weight: 69
+        types: ["grass", "poison"]
+        abilities:
+          - name: "overgrow"
+            is_hidden: false
+          - name: "chlorophyll" 
+            is_hidden: true
+        stats:
+          - name: "hp"
+            value: 45
+          - name: "attack"
+            value: 49
+        sprite: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png"
+        is_favorite: false
+
+    FavoritePokemon:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: database id (favorite record)
+        pokeapi_id:
+          type: integer
+        name:
+          type: string
+        types:
+          type: array
+          items: 
+            type: string
+        abilities:
+          type: array
+          items: 
+            type: object
+            properties:
+              name: { type: string }
+              is_hidden: { type: boolean }
+        stats:
+          type: array
+          items: 
+            type: object
+            properties:
+              name: { type: string }
+              value: { type: integer }
+        sprite:
+          type: string
+          format: uri
+        height:
+          type: integer
+        weight:
+          type: integer
+        is_favorite:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      example:
+        id: 12
+        pokeapi_id: 1
+        name: "bulbasaur"
+        types: ["grass", "poison"]
+        abilities: 
+          - name: "overgrow"
+            is_hidden: false
+        stats:
+          - name: "hp"
+            value: 45
+        sprite: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png"
+        height: 7
+        weight: 69
+        is_favorite: true
+        created_at: "2025-11-11T08:00:00Z"
+        updated_at: "2025-11-11T08:00:00Z"
+
+    FavoriteResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/FavoritePokemon'
+        count:
+          type: integer
+      example:
+        data:
+          - id: 12
+            pokeapi_id: 1
+            name: "bulbasaur"
+            types: ["grass", "poison"]
+            abilities: 
+              - name: "overgrow"
+                is_hidden: false
+            stats:
+              - name: "hp"
+                value: 45
+            sprite: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png"
+            height: 7
+            weight: 69
+            is_favorite: true
+            created_at: "2025-11-11T08:00:00Z"
+            updated_at: "2025-11-11T08:00:00Z"
+        count: 1
+
+    AbilitiesResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type: string
+        count:
+          type: integer
+      example:
+        data: ["overgrow", "chlorophyll", "static"]
+        count: 3
+
+    ToggleFavoriteResponse:
+      type: object
+      properties:
+        message:
+          type: string
+        data:
+          $ref: '#/components/schemas/FavoritePokemon'
+        is_favorite:
+          type: boolean
+      example:
+        message: "Pokemon added to favorites"
+        data:
+          id: 12
+          pokeapi_id: 1
+          name: "bulbasaur"
+          types: ["grass", "poison"]
+          abilities: 
+            - name: "overgrow"
+              is_hidden: false
+          stats:
+            - name: "hp"
+              value: 45
+          sprite: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png"
+          height: 7
+          weight: 69
+          is_favorite: true
+          created_at: "2025-11-11T08:00:00Z"
+          updated_at: "2025-11-11T08:00:00Z"
+        is_favorite: true
+
+    CoinRequest:
+      type: object
+      required:
+        - coins
+      properties:
+        coins:
+          type: array
+          items:
+            type: integer
+          example: [50, 1000, 400, 50, 300, 1200, 1000, 25, 50, 45, 100]
+
+    CoinResponse:
+      type: object
+      properties:
+        coins:
+          type: array
+          items:
+            type: string
+          example: ["3x 50", "2x 1000", "1x 400", "1x 300", "1x 1200", "1x 25", "1x 45", "1x 100"]
+
+  parameters:
+    PageParam:
+      name: page
+      in: query
+      description: Page number (1-based)
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+    LimitParam:
+      name: limit
+      in: query
+      description: Items per page (max 100)
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+    SearchQueryParam:
+      name: q
+      in: query
+      description: Search query string
+      required: false
+      schema:
+        type: string
+        maxLength: 100
+    PokemonIdentifier:
+      name: id
+      in: path
+      description: Pokemon ID or name
+      required: true
+      schema:
+        type: string
+        example: "pikachu"
+    AbilityParam:
+      name: ability
+      in: path
+      description: Ability name
+      required: true
+      schema:
+        type: string
+        example: "static"
+
+paths:
+  /api/test:
+    get:
+      summary: Test API connectivity
+      tags: [System]
+      responses:
+        '200':
+          description: API is working
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: "Pokemon API is working!"
+
+  /api/pokemon:
+    get:
+      summary: Get paginated list of Pokemons from PokeAPI
+      tags: [Pokemons]
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/LimitParam'
+      responses:
+        '200':
+          description: List of pokemons retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PokemonListResponse'
+        '400':
+          description: Invalid query parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                InvalidPage:
+                  value:
+                    error: "Validation failed"
+                    messages:
+                      page: ["The page must be an integer."]
+                InvalidLimit:
+                  value:
+                    error: "Validation failed"
+                    messages:
+                      limit: ["The limit must not be greater than 100."]
+        '500':
+          description: Server error when fetching from PokeAPI
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                example:
+                  error: "Failed to fetch pokemons from PokeAPI"
+
+  /api/pokemon/{id}:
+    get:
+      summary: Get Pokemon detail by ID or name
+      tags: [Pokemons]
+      parameters:
+        - $ref: '#/components/parameters/PokemonIdentifier'
+      responses:
+        '200':
+          description: Pokemon detail retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/PokemonDetail'
+        '400':
+          description: Invalid Pokemon identifier
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                example:
+                  error: "Invalid Pokemon identifier"
+        '404':
+          description: Pokemon not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                example:
+                  error: "Pokemon not found"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                example:
+                  error: "Internal server error"
+
+  /api/pokemon/{id}/favorite:
+    post:
+      summary: Toggle favorite status for a Pokemon
+      tags: [Favorites]
+      parameters:
+        - $ref: '#/components/parameters/PokemonIdentifier'
+      responses:
+        '200':
+          description: Favorite status toggled successfully
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - type: object
+                    properties:
+                      message:
+                        type: string
+                      is_favorite:
+                        type: boolean
+                    example:
+                      message: "Pokemon removed from favorites"
+                      is_favorite: false
+                  - $ref: '#/components/schemas/ToggleFavoriteResponse'
+        '400':
+          description: Invalid Pokemon identifier
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                example:
+                  error: "Invalid Pokemon identifier"
+        '404':
+          description: Pokemon not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                example:
+                  error: "Pokemon not found"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                example:
+                  error: "Internal server error"
+
+  /api/favorites:
+    get:
+      summary: Get all favorite pokemons
+      tags: [Favorites]
+      responses:
+        '200':
+          description: Favorites list retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FavoriteResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                example:
+                  error: "Internal server error"
+
+  /api/favorites/search:
+    get:
+      summary: Search favorites by name
+      tags: [Favorites]
+      parameters:
+        - $ref: '#/components/parameters/SearchQueryParam'
+      responses:
+        '200':
+          description: Search results retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FavoriteResponse'
+        '422':
+          description: Invalid search query
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                InvalidQuery:
+                  value:
+                    error: "Validation failed"
+                    messages:
+                      q: ["The q must be a string."]
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                example:
+                  error: "Internal server error"
+
+  /api/favorites/abilities:
+    get:
+      summary: Get unique list of abilities from all favorites
+      tags: [Favorites]
+      responses:
+        '200':
+          description: Abilities list retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AbilitiesResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                example:
+                  error: "Internal server error"
+
+  /api/favorites/ability/{ability}:
+    get:
+      summary: Get favorite pokemons by ability
+      tags: [Favorites]
+      parameters:
+        - $ref: '#/components/parameters/AbilityParam'
+      responses:
+        '200':
+          description: Filtered favorites retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/FavoritePokemon'
+                  ability:
+                    type: string
+                  count:
+                    type: integer
+                example:
+                  data:
+                    - id: 12
+                      pokeapi_id: 25
+                      name: "pikachu"
+                      types: ["electric"]
+                      abilities: 
+                        - name: "static"
+                          is_hidden: false
+                      stats:
+                        - name: "hp"
+                          value: 35
+                      sprite: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png"
+                      height: 4
+                      weight: 60
+                      is_favorite: true
+                      created_at: "2025-11-11T08:00:00Z"
+                      updated_at: "2025-11-11T08:00:00Z"
+                  ability: "static"
+                  count: 1
+        '400':
+          description: Invalid ability parameter
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                example:
+                  error: "Invalid ability parameter"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                example:
+                  error: "Internal server error"
+
+  /api/coins/count:
+    post:
+      summary: Count coin denominations (Bonus Task)
+      tags: [Bonus]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CoinRequest'
+      responses:
+        '200':
+          description: Coins counted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CoinResponse'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                InvalidCoinsArray:
+                  value:
+                    message: "Validation failed"
+                    errors:
+                      coins: ["The coins must be an array."]
+                InvalidCoinValue:
+                  value:
+                    message: "Validation failed"
+                    errors:
+                      "coins.1": ["The coins.1 must be an integer."]
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                example:
+                  error: "Internal server error"
+
+tags:
+  - name: System
+    description: System health check endpoints
+  - name: Pokemons
+    description: Endpoints to list and view Pokémon from PokeAPI
+  - name: Favorites
+    description: Favorite pokémons management
+  - name: Bonus
+    description: Bonus task endpoints

@@ -1,0 +1,591 @@
+{
+	"info": {
+		"_postman_id": "54330272-4198-4a72-b4f4-4c51a751cdab",
+		"name": "Pokemon-App API Collection",
+		"description": "Complete Pokemon API collection with all required endpoints and error handling test cases",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "26155791"
+	},
+	"item": [
+		{
+			"name": "🏠 System Health Check",
+			"item": [
+				{
+					"name": "GET Test API Connection",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/api/test",
+							"host": ["{{baseURL}}"],
+							"path": ["api", "test"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "📝 Display List of Pokemon",
+			"item": [
+				{
+					"name": "GET List Pokemon - Valid (Page 1, Limit 20)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/api/pokemon?page=1&limit=20",
+							"host": ["{{baseURL}}"],
+							"path": ["api", "pokemon"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "20"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "GET List Pokemon - Invalid Page (String)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/api/pokemon?page=invalid&limit=20",
+							"host": ["{{baseURL}}"],
+							"path": ["api", "pokemon"],
+							"query": [
+								{
+									"key": "page",
+									"value": "invalid"
+								},
+								{
+									"key": "limit",
+									"value": "20"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "GET List Pokemon - Limit Too High",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/api/pokemon?page=1&limit=150",
+							"host": ["{{baseURL}}"],
+							"path": ["api", "pokemon"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "150"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "GET List Pokemon - Negative Page",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/api/pokemon?page=-1&limit=20",
+							"host": ["{{baseURL}}"],
+							"path": ["api", "pokemon"],
+							"query": [
+								{
+									"key": "page",
+									"value": "-1"
+								},
+								{
+									"key": "limit",
+									"value": "20"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "🔍 Showing Detail Pokemon",
+			"item": [
+				{
+					"name": "GET Pokemon Detail - By Valid ID (25)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/api/pokemon/25",
+							"host": ["{{baseURL}}"],
+							"path": ["api", "pokemon", "25"]
+						}
+					}
+				},
+				{
+					"name": "GET Pokemon Detail - By Valid Name (pikachu)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/api/pokemon/pikachu",
+							"host": ["{{baseURL}}"],
+							"path": ["api", "pokemon", "pikachu"]
+						}
+					}
+				},
+				{
+					"name": "GET Pokemon Detail - Invalid ID (999999)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/api/pokemon/999999",
+							"host": ["{{baseURL}}"],
+							"path": ["api", "pokemon", "999999"]
+						}
+					}
+				},
+				{
+					"name": "GET Pokemon Detail - Invalid Name",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/api/pokemon/invalidpokemon123",
+							"host": ["{{baseURL}}"],
+							"path": ["api", "pokemon", "invalidpokemon123"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "⭐ Add Pokemon to Favorite List",
+			"item": [
+				{
+					"name": "POST Add Pokemon to Favorite - Pikachu",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{baseURL}}/api/pokemon/pikachu/favorite",
+							"host": ["{{baseURL}}"],
+							"path": ["api", "pokemon", "pikachu", "favorite"]
+						}
+					}
+				},
+				{
+					"name": "POST Remove Pokemon from Favorite - Pikachu",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{baseURL}}/api/pokemon/pikachu/favorite",
+							"host": ["{{baseURL}}"],
+							"path": ["api", "pokemon", "pikachu", "favorite"]
+						}
+					}
+				},
+				{
+					"name": "POST Toggle Favorite - Invalid Pokemon",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{baseURL}}/api/pokemon/invalidpokemon/favorite",
+							"host": ["{{baseURL}}"],
+							"path": ["api", "pokemon", "invalidpokemon", "favorite"]
+						}
+					}
+				},
+				{
+					"name": "POST Toggle Favorite - Charizard",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{baseURL}}/api/pokemon/charizard/favorite",
+							"host": ["{{baseURL}}"],
+							"path": ["api", "pokemon", "charizard", "favorite"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "🔎 Search of Favorite Pokemon",
+			"item": [
+				{
+					"name": "GET Search Favorites - Valid Query (pika)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/api/favorites/search?q=pika",
+							"host": ["{{baseURL}}"],
+							"path": ["api", "favorites", "search"],
+							"query": [
+								{
+									"key": "q",
+									"value": "pika"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "GET Search Favorites - Empty Query",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/api/favorites/search?q=",
+							"host": ["{{baseURL}}"],
+							"path": ["api", "favorites", "search"],
+							"query": [
+								{
+									"key": "q",
+									"value": ""
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "GET Search Favorites - Query Too Long (101 chars)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/api/favorites/search?q=abcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghija",
+							"host": ["{{baseURL}}"],
+							"path": ["api", "favorites", "search"],
+							"query": [
+								{
+									"key": "q",
+									"value": "abcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghija"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "GET Search Favorites - Invalid Characters",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/api/favorites/search?q=test@#$%",
+							"host": ["{{baseURL}}"],
+							"path": ["api", "favorites", "search"],
+							"query": [
+								{
+									"key": "q",
+									"value": "test@#$%"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "📋 Display List of Favorite Pokemon",
+			"item": [
+				{
+					"name": "GET All Favorite Pokemons",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/api/favorites",
+							"host": ["{{baseURL}}"],
+							"path": ["api", "favorites"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "💪 Display List of Abilities for All Pokemon Added to the Favorite List",
+			"item": [
+				{
+					"name": "GET All Favorite Abilities",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/api/favorites/abilities",
+							"host": ["{{baseURL}}"],
+							"path": ["api", "favorites", "abilities"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "🎯 Display a List of Pokemon Based on the Selected Ability",
+			"item": [
+				{
+					"name": "GET Pokemon by Ability - Valid (static)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/api/favorites/ability/static",
+							"host": ["{{baseURL}}"],
+							"path": ["api", "favorites", "ability", "static"]
+						}
+					}
+				},
+				{
+					"name": "GET Pokemon by Ability - Non-existent Ability",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/api/favorites/ability/nonexistentability123",
+							"host": ["{{baseURL}}"],
+							"path": ["api", "favorites", "ability", "nonexistentability123"]
+						}
+					}
+				},
+				{
+					"name": "GET Pokemon by Ability - Invalid Characters",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/api/favorites/ability/654sgfs6@",
+							"host": ["{{baseURL}}"],
+							"path": ["api", "favorites", "ability", "654sgfs6@"]
+						}
+					}
+				},
+				{
+					"name": "GET Pokemon by Ability - Too Long",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/api/favorites/ability/thisabilitynameistoolongandexceedsthefiftycharacterlimit",
+							"host": ["{{baseURL}}"],
+							"path": ["api", "favorites", "ability", "thisabilitynameistoolongandexceedsthefiftycharacterlimit"]
+						}
+					}
+				},
+				{
+					"name": "GET Pokemon by Ability - Empty",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/api/favorites/ability/",
+							"host": ["{{baseURL}}"],
+							"path": ["api", "favorites", "ability", ""]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "🪙 Bonus Task - Coin Counter",
+			"item": [
+				{
+					"name": "POST Count Coins - Valid",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"coins\": [50, 1000, 400, 50, 300, 1200, 1000, 25, 50, 45, 100]\n}"
+						},
+						"url": {
+							"raw": "{{baseURL}}/api/coins/count",
+							"host": ["{{baseURL}}"],
+							"path": ["api", "coins", "count"]
+						}
+					}
+				},
+				{
+					"name": "POST Count Coins - Empty Array",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"coins\": []\n}"
+						},
+						"url": {
+							"raw": "{{baseURL}}/api/coins/count",
+							"host": ["{{baseURL}}"],
+							"path": ["api", "coins", "count"]
+						}
+					}
+				},
+				{
+					"name": "POST Count Coins - Missing Coins Field",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{}"
+						},
+						"url": {
+							"raw": "{{baseURL}}/api/coins/count",
+							"host": ["{{baseURL}}"],
+							"path": ["api", "coins", "count"]
+						}
+					}
+				},
+				{
+					"name": "POST Count Coins - Coins Not Array",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"coins\": \"invalid\"\n}"
+						},
+						"url": {
+							"raw": "{{baseURL}}/api/coins/count",
+							"host": ["{{baseURL}}"],
+							"path": ["api", "coins", "count"]
+						}
+					}
+				},
+				{
+					"name": "POST Count Coins - Invalid Coin Value",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"coins\": [50, \"invalid\", 100]\n}"
+						},
+						"url": {
+							"raw": "{{baseURL}}/api/coins/count",
+							"host": ["{{baseURL}}"],
+							"path": ["api", "coins", "count"]
+						}
+					}
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "baseURL",
+			"value": "http://localhost:8000",
+			"type": "default"
+		}
+	],
+	"event": [
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Basic response tests for successful requests",
+					"if (pm.response.code === 200) {",
+					"    pm.test(\"Status code is 200\", function () {",
+					"        pm.response.to.have.status(200);",
+					"    });",
+					"    ",
+					"    // Test response time",
+					"    pm.test(\"Response time is less than 2000ms\", function () {",
+					"        pm.expect(pm.response.responseTime).to.be.below(2000);",
+					"    });",
+					"}",
+					"",
+					"// For error cases, test error structure",
+					"if (pm.response.code >= 400) {",
+					"    pm.test(\"Error response has expected structure\", function () {",
+					"        var jsonData = pm.response.json();",
+					"        pm.expect(jsonData).to.have.property('error').or.have.property('message');",
+					"    });",
+					"}",
+					"",
+					"// Test that response has valid JSON",
+					"pm.test(\"Response has valid JSON\", function () {",
+					"    pm.response.to.be.json;",
+					"});"
+				]
+			}
+		}
+	]
+}
